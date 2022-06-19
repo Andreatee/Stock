@@ -1,0 +1,71 @@
+Sub MacroCheck()
+    Dim testmessage As String
+    testmessage = "Hello World!"
+    MsgBox (testmessage)
+End Sub
+
+Sub DQAnalysis()
+    'Worksheets focuses your analysis on a worksheet
+    Worksheets("DQ Analysis").Activate
+    Range("A1").Value = "DAQO (Ticker: DQ)"
+    
+    'Create a header row
+    Cells(3, 1).Value = "Year"
+    Cells(3, 2).Value = "Total Daily Volume"
+    Cells(3, 3).Value = "Return"
+     'Activate the 2018 worksheet
+    Worksheets("2018").Activate
+   
+    'We can also use variables that are defined
+    'outside of the for loop inside our block of code.
+    'If we create a totalVolume variable and set it equal to zero,
+    'we can add to it inside of the loop; when the loop is done,
+    'totalVolume will hold the sum of all the volume
+    'we want to loop through all the rows in 2018 sheet
+    'it starts at row 2 and ends in row 3013 but assign to variable
+    
+    totalVolume = 0
+    
+    Dim startingPrice As Long
+    Dim endPrice As Long
+    
+    rowstart = 2
+    'DELETE: rowEnd = 3013
+    'rowEnd code taken from https://stackoverflow.com/questions/18088729/row-count-where-data-exists
+    rowEnd = Cells(Rows.Count, "A").End(xlUp).Row
+    
+   
+    
+   
+    'start the for loop
+    For i = rowstart To rowEnd
+    
+    'increase totalVolume if ticker is "DQ"
+        If Cells(i, 1).Value = "DQ" Then
+    'now do the calculation for totalvolume
+    'the column we want to work on is the 8th column
+            totalVolume = totalVolume + Cells(i, 8).Value
+        End If
+        
+        If Cells(i, 1).Value = "DQ" And Cells(i - 1, 1).Value <> "DQ" Then
+            startingPrice = Cells(i, 6).Value
+        End If
+        
+        If Cells(i, 1).Value = "DQ" And Cells(i + 1, 1).Value <> "DQ" Then
+            endPrice = Cells(i, 6).Value
+        End If
+        
+    Next i
+        
+    'display totalvolume
+    'MsgBox (totalVolume)
+    
+    Worksheets("DQ Analysis").Activate
+    Cells(4, 1).Value = 2018
+    Cells(4, 2).Value = totalVolume
+    Cells(4, 3).Value = (endPrice / startingPrice) - 1
+End Sub
+
+
+
+
